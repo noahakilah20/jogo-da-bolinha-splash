@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jogo Splash Crazy</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background-color: #111;
+      color: #0ff;
+      font-family: Arial, sans-serif;
+      display: flex;
+    }
+    #gameArea {
+      border: 2px solid cyan;
+      background-color: #222;
+      margin: 20px;
+      position: relative;
+    }
+    canvas {
+      display: block;
+    }
+    #sidebar {
+      margin: 20px 0;
+      padding: 20px;
+      color: #0ff;
+      width: 240px;
+      font-size: 14px;
+    }
+    h1 {
+      color: #0ff;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 6px;
+      border: 1px solid #0ff;
+      border-radius: 4px;
+      background-color: #111;
+      color: #0ff;
+      resize: vertical;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+    input[type="text"]::placeholder,
+    textarea::placeholder {
+      color: #0aa;
+    }
+    button {
+      background-color: #0ff;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: #111;
+      font-weight: bold;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0cc;
+    }
+    hr {
+      border-color: #0ff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h1>Splash Crazy</h1>
+    <p><strong>Jogador:</strong> <span id="playerName">---</span></p>
+    <p><strong>Pontuação:</strong> <span id="score">0</span></p>
+    <p><strong>Recorde:</strong> <span id="highScore">0</span></p>
+    <p><strong>Vidas:</strong> <span id="lives">3</span></p>
+    <p><strong>Fase:</strong> <span id="level">1</span></p>
+
+    <hr />
+
+    <h2>Deixe seu comentário</h2>
+    <form action="https://formsubmit.co/noahrosa8046@gmail.com" method="POST" target="_blank">
+      <label for="name">Nome:</label>
+      <input type="text" id="name" name="name" placeholder="Seu nome" required />
+
+      <label for="message">Comentário / Sugestão:</label>
+      <textarea id="message" name="message" placeholder="Escreva aqui..." required rows="4"></textarea>
+
+      <!-- Desabilitar captcha -->
+      <input type="hidden" name="_captcha" value="false" />
+
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <div id="gameArea">
+    <canvas id="gameCanvas" width="480" height="640"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const scoreEl = document.getElementById("score");
+    const highScoreEl = document.getElementById("highScore");
+    const livesEl = document.getElementById("lives");
+    const levelEl = document.getElementById("level");
+    const playerNameEl = document.getElementById("playerName");
+
+    let playerName = prompt("Digite seu nome:");
+    playerNameEl.textContent = playerName || "Desconhecido";
+
+    let score = 0;
+    let highScore = 0;
+    let lives = 3;
+    let level = 1;
+
+    let paddle = {
+      x: canvas.width / 2 - 40,
+      y: canvas.height - 20,
+      width: 80,
+      height: 10,
+      dx: 0
+    };
+
+    let ball = {
+      x: canvas.width / 2,
+      y: canvas.height - 30,
+      radius: 8,
+      dx: 3,
+      dy: -3
+    };
+
+    const brickRowCount = 5;
+    const brickColumnCount = 8;
+    const brickWidth = 50;
+    const brickHeight = 15;
+    const brickPadding = 8;
+    const brickOffsetTop = 40;
+    const brickOffsetLeft = 20;
+
+    let bricks = [];
+    let hitCount = [];
+
+    function createBricks() {
+      bricks = [];
+      hitCount = [];
+      for (let c = 0; c < brickColumnCount; c++) {
+        bricks[c] = [];
+        hitCount[c] = [];
+        for (let r = 0; r < brickRowCount; r++) {
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
+          hitCount[c][r] = 0;
+        }
+      }
+    }
+
+    function drawBricks() {
+      for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+          if (bricks[c][r].status > 0) {
+            let brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+            let brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+
+            if (hitCount[c][r] === 0) ctx.fillStyle = "#0f0";
+            else if (hitCount[c][r] === 1) ctx.fillStyle = "#ff0";
+            else ctx.fillStyle = "#f00";
+
+            ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+          }
+        }
+      }
+    }
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawPaddle() {
+      ctx.fillStyle = "#0ff";
+      ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBricks();
+      drawBall();
+      drawPaddle();
+      update();
+      requestAnimationFrame(draw);
+    }
+
+    function update() {
+      // Movimento da bolinha
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // Colisão com parede
+      if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+        ball.dx = -ball.dx;
+      }
+      if (ball.y - ball.radius < 0) {
+        ball.dy = -ball.dy;
+      }
+
+      // Colisão com paddle
+      if (
+        ball.x > paddle.x &&
+        ball.x < paddle.x + paddle.width &&
+        ball.y + ball.radius > paddle.y
+      ) {
+        ball.dy = -ball.dy;
+      }
+
+      // Colisão com tijolos
+      for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+          let b = bricks[c][r];
+          if (b.status > 0) {
+            if (
+              ball.x > b.x &&
+              ball.x < b.x + brickWidth &&
+              ball.y > b.y &&
+              ball.y < b.y + brickHeight
+            ) {
+              ball.dy = -ball.dy;
+              hitCount[c][r]++;
+              score += 5;
+              scoreEl.textContent = score;
+
+              if (hitCount[c][r] >= 3) {
+                b.status = 0;
+                score += 15;
+              }
+
+              if (score > highScore) {
+                highScore = score;
+                highScoreEl.textContent = highScore;
+              }
+
+              // Fase concluída
+              let destroyed = 0;
+              for (let i = 0; i < brickColumnCount; i++) {
+                for (let j = 0; j < brickRowCount; j++) {
+                  if (bricks[i][j].status === 0) destroyed++;
+                }
+              }
+
+              if (destroyed >= brickRowCount * brickColumnCount * 0.8 || score >= level * 500) {
+                level++;
+                levelEl.textContent = level;
+                resetBall();
+                createBricks();
+              }
+            }
+          }
+        }
+      }
+
+      // Perdeu a bolinha
+      if (ball.y + ball.radius > canvas.height) {
+        lives--;
+        livesEl.textContent = lives;
+        if (lives <= 0) {
+          alert("Fim de Jogo!");
+          resetGame();
+        } else {
+          resetBall();
+        }
+      }
+
+      // Atualizar paddle
+      paddle.x += paddle.dx;
+
+      // Limites paddle
+      if (paddle.x < 0) paddle.x = 0;
+      if (paddle.x + paddle.width > canvas.width)
+        paddle.x = canvas.width - paddle.width;
+    }
+
+    function resetBall() {
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height - 30;
+      ball.dx = 3 + level * 0.5;
+      ball.dy = -(3 + level * 0.5);
+    }
+
+    function resetGame() {
+      score = 0;
+      level = 1;
+      lives = 3;
+      scoreEl.textContent = score;
+      livesEl.textContent = lives;
+      levelEl.textContent = level;
+      createBricks();
+      resetBall();
+    }
+
+    // Controles
+    document.addEventListener("mousemove", (e) => {
+      let relativeX = e.clientX - canvas.getBoundingClientRect().left;
+      if (relativeX > 0 && relativeX < canvas.width) {
+        paddle.x = relativeX - paddle.width / 2;
+      }
+    });
+
+    document.addEventListener("touchmove", (e) => {
+      let touch = e.touches[0];
+      let relativeX = touch.clientX - canvas.getBoundingClientRect().left;
+      if (relativeX > 0 && relativeX < canvas.width) {
+        paddle.x = relativeX - paddle.width / 2;
+      }
+    });
+
+    // Iniciar jogo
+    createBricks();
+    resetBall();
+    draw();
+  </script>
+</body>
+</html>
