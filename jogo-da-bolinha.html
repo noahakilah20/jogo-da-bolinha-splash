@@ -1,206 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Splash Crazy - Jogo da Bolinha Neon</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #111;
-    color: #0ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    user-select: none;
-  }
-  #menu, #gameContainer {
-    background: #111;
-    border: 2px solid cyan;
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 0 20px cyan;
-    text-align: center;
-  }
-  #menu {
-    width: 320px;
-  }
-  #gameContainer {
-    display: none;
-    width: 1080px;
-    height: 680px;
-    display: flex;
-    gap: 20px;
-  }
-  button {
-    display: block;
-    width: 180px;
-    padding: 10px;
-    margin: 10px auto;
-    font-size: 16px;
-    border: 2px solid cyan;
-    border-radius: 10px;
-    background-color: black;
-    color: cyan;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover {
-    background-color: cyan;
-    color: black;
-    font-weight: bold;
-  }
-  #sidebar {
-    margin: 0;
-    padding: 20px;
-    color: #0ff;
-    width: 240px;
-    font-size: 14px;
-    background-color: #111;
-    border-radius: 12px;
-    box-shadow: 0 0 15px cyan;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  #sidebar h1 {
-    color: #0ff;
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  #sidebar h2 {
-    margin-top: 20px;
-    font-size: 16px;
-  }
-  #sidebar label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 4px;
-  }
-  #sidebar input[type="text"], #sidebar textarea {
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 6px;
-    border: 1px solid #0ff;
-    border-radius: 4px;
-    background-color: #111;
-    color: #0ff;
-    resize: vertical;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-  }
-  #sidebar input[type="text"]::placeholder,
-  #sidebar textarea::placeholder {
-    color: #0aa;
-  }
-  #sidebar button {
-    background-color: #0ff;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    color: #111;
-    font-weight: bold;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-  }
-  #sidebar button:hover {
-    background-color: #0cc;
-  }
-  #sidebar hr {
-    border-color: #0ff;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  #gameArea {
-    border: 2px solid cyan;
-    background-color: #222;
-    border-radius: 12px;
-    position: relative;
-    box-shadow: 0 0 20px cyan;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  canvas {
-    display: block;
-    background-color: #000;
-    border-radius: 10px;
-    touch-action: none;
-  }
-  #backBtn {
-    margin-top: 15px;
-    width: auto;
-    padding: 6px 12px;
-    font-size: 14px;
-  }
-  #characterModal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #000;
-    border: 2px solid cyan;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 20px cyan;
-    z-index: 1000;
-    width: 320px;
-    text-align: left;
-    color: #0ff;
-  }
-  #characterModal h2 {
-    text-align: center;
-    margin-bottom: 15px;
-  }
-  #closeModalBtn {
-    background-color: red;
-    color: white;
-    width: auto;
-    padding: 4px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    display: block;
-    margin: 10px auto 0;
-  }
-  .ball-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px;
-    margin: 4px 0;
-    border: 1px solid #0ff;
-    border-radius: 8px;
-  }
-  .locked {
-    opacity: 0.4;
-  }
-  .ball-option button {
-    background-color: black;
-    border: 1px solid cyan;
-    border-radius: 6px;
-    color: cyan;
-    cursor: pointer;
-    padding: 4px 12px;
-    transition: 0.3s;
-  }
-  .ball-option button:hover:not(:disabled) {
-    background-color: cyan;
-    color: black;
-    font-weight: bold;
-  }
-  .ball-option button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Splash Crazy - Jogo da Bolinha Neon</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #0ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #menu, #gameContainer {
+      background: #111;
+      border: 2px solid cyan;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 20px cyan;
+      text-align: center;
+    }
+    #menu {
+      width: 320px;
+    }
+    #gameContainer {
+      display: none;
+      width: 1080px;
+      height: 680px;
+      display: flex;
+      gap: 20px;
+    }
+    button {
+      display: block;
+      width: 180px;
+      padding: 10px;
+      margin: 10px auto;
+      font-size: 16px;
+      border: 2px solid cyan;
+      border-radius: 10px;
+      background-color: black;
+      color: cyan;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: cyan;
+      color: black;
+      font-weight: bold;
+    }
+    #sidebar {
+      margin: 0;
+      padding: 20px;
+      color: #0ff;
+      width: 240px;
+      font-size: 14px;
+      background-color: #111;
+      border-radius: 12px;
+      box-shadow: 0 0 15px cyan;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #sidebar h1 {
+      color: #0ff;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    #sidebar h2 {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    #sidebar label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+    #sidebar input[type="text"], #sidebar textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 6px;
+      border: 1px solid #0ff;
+      border-radius: 4px;
+      background-color: #111;
+      color: #0ff;
+      resize: vertical;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+    #sidebar input[type="text"]::placeholder,
+    #sidebar textarea::placeholder {
+      color: #0aa;
+    }
+    #sidebar button {
+      background-color: #0ff;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: #111;
+      font-weight: bold;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+    #sidebar button:hover {
+      background-color: #0cc;
+    }
+    #sidebar hr {
+      border-color: #0ff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    #gameArea {
+      border: 2px solid cyan;
+      background-color: #222;
+      border-radius: 12px;
+      position: relative;
+      box-shadow: 0 0 20px cyan;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      display: block;
+      background-color: #000;
+      border-radius: 10px;
+      touch-action: none; /* importante para touch */
+    }
+    #backBtn {
+      margin-top: 15px;
+      width: auto;
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    /* Modal de seleção de personagem */
+    #characterModal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #000;
+      border: 2px solid cyan;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 20px cyan;
+      z-index: 1000;
+      width: 320px;
+      text-align: left;
+      color: #0ff;
+    }
+    #characterModal h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    #closeModalBtn {
+      background-color: red;
+      color: white;
+      width: auto;
+      padding: 4px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      display: block;
+      margin: 10px auto 0;
+    }
+    .ball-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px;
+      margin: 4px 0;
+      border: 1px solid #0ff;
+      border-radius: 8px;
+    }
+    .locked {
+      opacity: 0.4;
+    }
+    .ball-option button {
+      background-color: black;
+      border: 1px solid cyan;
+      border-radius: 6px;
+      color: cyan;
+      cursor: pointer;
+      padding: 4px 12px;
+      transition: 0.3s;
+    }
+    .ball-option button:hover:not(:disabled) {
+      background-color: cyan;
+      color: black;
+      font-weight: bold;
+    }
+    .ball-option button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  </style>
 </head>
 <body>
+  <!-- MENU INICIAL -->
   <div id="menu">
     <h1>Menu Principal</h1>
     <button id="startBtn">Start</button>
@@ -208,6 +209,7 @@
     <button onclick="alert('Saindo do jogo...')">Exit</button>
   </div>
 
+  <!-- CONTAINER DO JOGO + SIDEBAR -->
   <div id="gameContainer">
     <div id="sidebar">
       <h1>Jogo da Bolinha Neon</h1>
@@ -239,6 +241,7 @@
     </div>
   </div>
 
+  <!-- MODAL DE SELEÇÃO DE PERSONAGEM -->
   <div id="characterModal">
     <h2>Escolha sua Bolinha</h2>
     <div id="characterList"></div>
@@ -246,6 +249,7 @@
   </div>
 
   <script>
+    // Elementos principais
     const menu = document.getElementById("menu");
     const gameContainer = document.getElementById("gameContainer");
     const startBtn = document.getElementById("startBtn");
@@ -253,17 +257,20 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
+    // HUD
     const scoreEl = document.getElementById("score");
     const highScoreEl = document.getElementById("highScore");
     const livesEl = document.getElementById("lives");
     const levelEl = document.getElementById("level");
     const playerNameEl = document.getElementById("playerName");
 
+    // Modal de personagens
     const charBtn = document.getElementById("charBtn");
     const characterModal = document.getElementById("characterModal");
     const characterList = document.getElementById("characterList");
     const closeModalBtn = document.getElementById("closeModalBtn");
 
+    // Variáveis do jogador
     let playerName = prompt("Digite seu nome:");
     playerNameEl.textContent = playerName || "Desconhecido";
 
@@ -272,13 +279,16 @@
     let lives = 3;
     let level = 1;
 
+    // Posição e tamanho da raquete (paddle)
     let paddle = {
       x: canvas.width / 2 - 40,
       y: canvas.height - 20,
       width: 80,
-      height: 10
+      height: 10,
+      dx: 0
     };
 
+    // Bolinha
     let ball = {
       x: canvas.width / 2,
       y: canvas.height - 30,
@@ -287,6 +297,7 @@
       dy: 0
     };
 
+    // Tabela de blocos (bricks)
     const brickRowCount = 5;
     const brickColumnCount = 8;
     const brickWidth = 50;
@@ -298,11 +309,17 @@
     let bricks = [];
     let hitCount = [];
 
+    // Controle do lançamento da bola
     let isAiming = false;
     let launched = false;
     let aimStart = null;
     let aimEnd = null;
 
+    // Variáveis para controle do drag da raquete
+    let isDraggingPaddle = false;
+    let lastDragX = 0;
+
+    // Personagens (bolinhas) e desbloqueios
     const characters = [
       { name: "Bola Clássica", unlock: () => true },
       { name: "Bola de Cristal", unlock: () => level >= 3 },
@@ -312,6 +329,7 @@
     ];
     let selectedBall = "Bola Clássica";
 
+    // Funções de bricks
     function createBricks() {
       bricks = [];
       hitCount = [];
@@ -341,16 +359,28 @@
       }
     }
 
+    // Desenha a bola usando a bolinha selecionada
     function drawBall() {
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
       switch (selectedBall) {
-        case "Bola Clássica": ctx.fillStyle = "cyan"; break;
-        case "Bola de Cristal": ctx.fillStyle = "rgba(0, 255, 255, 0.3)"; break;
-        case "Bola de Ouro": ctx.fillStyle = "gold"; break;
-        case "Bola Brilhando": ctx.fillStyle = "lime"; break;
-        case "Bola Piscando": ctx.fillStyle = Math.random() > 0.5 ? "magenta" : "cyan"; break;
-        default: ctx.fillStyle = "cyan";
+        case "Bola Clássica":
+          ctx.fillStyle = "cyan";
+          break;
+        case "Bola de Cristal":
+          ctx.fillStyle = "rgba(0, 255, 255, 0.3)";
+          break;
+        case "Bola de Ouro":
+          ctx.fillStyle = "gold";
+          break;
+        case "Bola Brilhando":
+          ctx.fillStyle = "lime";
+          break;
+        case "Bola Piscando":
+          ctx.fillStyle = Math.random() > 0.5 ? "magenta" : "cyan";
+          break;
+        default:
+          ctx.fillStyle = "cyan";
       }
       ctx.fill();
       ctx.closePath();
@@ -406,6 +436,7 @@
         if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
         if (ball.y - ball.radius < 0) ball.dy = -ball.dy;
 
+        // Colisão com paddle
         if (
           ball.x > paddle.x &&
           ball.x < paddle.x + paddle.width &&
@@ -416,6 +447,7 @@
           ball.y = paddle.y - ball.radius;
         }
 
+        // Colisão com bricks
         for (let c = 0; c < brickColumnCount; c++) {
           for (let r = 0; r < brickRowCount; r++) {
             let b = bricks[c][r];
@@ -441,6 +473,7 @@
                   highScoreEl.textContent = highScore;
                 }
 
+                // Checar quantos blocos foram destruídos
                 let destroyed = 0;
                 for (let i = 0; i < brickColumnCount; i++) {
                   for (let j = 0; j < brickRowCount; j++) {
@@ -448,6 +481,7 @@
                   }
                 }
 
+                // Avança fase
                 if (
                   destroyed >= brickRowCount * brickColumnCount * 0.8 ||
                   score >= level * 500
@@ -462,6 +496,7 @@
           }
         }
 
+        // Bola caiu no chão
         if (ball.y - ball.radius > canvas.height) {
           lives--;
           livesEl.textContent = lives;
@@ -474,12 +509,15 @@
           }
         }
       } else {
+        // Bola presa na raquete
         ball.x = paddle.x + paddle.width / 2;
         ball.y = paddle.y - ball.radius - 1;
       }
 
+      // Limites da raquete
       if (paddle.x < 0) paddle.x = 0;
-      if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+      if (paddle.x + paddle.width > canvas.width)
+        paddle.x = canvas.width - paddle.width;
     }
 
     function resetBall() {
@@ -502,116 +540,145 @@
       resetBall();
     }
 
-    function launchBall() {
-      if (!aimStart || !aimEnd) return;
-      let dx = aimEnd.x - aimStart.x;
-      let dy = aimEnd.y - aimStart.y;
-      const maxForce = 8;
-      ball.dx = Math.max(Math.min(dx / 10, maxForce), -maxForce);
-      ball.dy = Math.max(Math.min(dy / 10, maxForce), -maxForce);
-      if (ball.dy > 0) ball.dy = -ball.dy;
-      launched = true;
-      isAiming = false;
-    }
+    // Eventos de input mouse e touch
 
-    let mouseDown = false;
+    // Variáveis para controle do drag da raquete
+    let mouseDrag = false;
+    let lastMouseX = 0;
 
+    let touchDrag = false;
+    let lastTouchX = 0;
+
+    // MOUSE
     canvas.addEventListener("mousedown", (e) => {
-      if (!launched) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (launched) {
+        // Bola lançada: inicia drag para mover raquete, só na metade inferior
+        if (y > canvas.height / 2) {
+          mouseDrag = true;
+          lastMouseX = x;
+          e.preventDefault();
+        }
+      } else {
+        // Bola não lançada: inicia mira para lançar
+        aimStart = { x: x, y: y };
+        aimEnd = { x: x, y: y };
         isAiming = true;
-        aimStart = { x: paddle.x + paddle.width / 2, y: paddle.y };
-        const rect = canvas.getBoundingClientRect();
-        aimEnd = {
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        };
       }
-      mouseDown = true;
     });
 
     canvas.addEventListener("mousemove", (e) => {
       const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      if (!launched && isAiming && mouseDown) {
-        aimEnd = { x: mouseX, y: mouseY };
-      } else if (launched && mouseDown) {
-        paddle.x = mouseX - paddle.width / 2;
-        if (paddle.x < 0) paddle.x = 0;
-        if (paddle.x + paddle.width > canvas.width)
-          paddle.x = canvas.width - paddle.width;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (mouseDrag && launched) {
+        // Mover a raquete com o mouse
+        let deltaX = x - lastMouseX;
+        paddle.x += deltaX;
+        lastMouseX = x;
+        e.preventDefault();
+      } else if (isAiming) {
+        aimEnd = { x: x, y: y };
       }
     });
 
     canvas.addEventListener("mouseup", (e) => {
-      if (!launched && isAiming) {
-        launchBall();
+      if (isAiming) {
+        // Calcula vetor direção da mira e lança a bola
+        const dx = aimStart.x - aimEnd.x;
+        const dy = aimStart.y - aimEnd.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        if (length > 10) {
+          const speed = 7;
+          ball.dx = (dx / length) * speed;
+          ball.dy = (dy / length) * speed;
+          launched = true;
+        }
       }
-      mouseDown = false;
       isAiming = false;
+      mouseDrag = false;
     });
 
-    canvas.addEventListener("mouseleave", (e) => {
-      mouseDown = false;
-      isAiming = false;
-    });
-
+    // TOUCH
     canvas.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
 
-      if (!launched) {
-        isAiming = true;
-        aimStart = { x: paddle.x + paddle.width / 2, y: paddle.y };
-        aimEnd = { x: touchX, y: touchY };
+      if (launched) {
+        if (y > canvas.height / 2) {
+          touchDrag = true;
+          lastTouchX = x;
+          e.preventDefault();
+        }
       } else {
-        paddle.x = touchX - paddle.width / 2;
-        if (paddle.x < 0) paddle.x = 0;
-        if (paddle.x + paddle.width > canvas.width)
-          paddle.x = canvas.width - paddle.width;
+        aimStart = { x: x, y: y };
+        aimEnd = { x: x, y: y };
+        isAiming = true;
       }
     });
 
     canvas.addEventListener("touchmove", (e) => {
-      e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
 
-      if (!launched && isAiming) {
-        aimEnd = { x: touchX, y: touchY };
-      } else if (launched) {
-        paddle.x = touchX - paddle.width / 2;
-        if (paddle.x < 0) paddle.x = 0;
-        if (paddle.x + paddle.width > canvas.width)
-          paddle.x = canvas.width - paddle.width;
+      if (touchDrag && launched) {
+        let deltaX = x - lastTouchX;
+        paddle.x += deltaX;
+        lastTouchX = x;
+        e.preventDefault();
+      } else if (isAiming) {
+        aimEnd = { x: x, y: y };
       }
     });
 
     canvas.addEventListener("touchend", (e) => {
-      e.preventDefault();
-      if (!launched && isAiming) {
-        launchBall();
+      if (isAiming) {
+        const dx = aimStart.x - aimEnd.x;
+        const dy = aimStart.y - aimEnd.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        if (length > 10) {
+          const speed = 7;
+          ball.dx = (dx / length) * speed;
+          ball.dy = (dy / length) * speed;
+          launched = true;
+        }
       }
       isAiming = false;
+      touchDrag = false;
     });
 
-    startBtn.addEventListener("click", () => {
+    // Função para mostrar o menu e esconder o jogo
+    function showMenu() {
+      gameContainer.style.display = "none";
+      menu.style.display = "block";
+    }
+
+    // Função para iniciar o jogo
+    function startGame() {
       menu.style.display = "none";
       gameContainer.style.display = "flex";
       resetGame();
       draw();
+    }
+
+    // Botões do menu
+    startBtn.addEventListener("click", () => {
+      startGame();
     });
 
     backBtn.addEventListener("click", () => {
-      gameContainer.style.display = "none";
-      menu.style.display = "block";
+      showMenu();
     });
 
+    // Seleção de personagem
     charBtn.addEventListener("click", () => {
       characterModal.style.display = "block";
       renderCharacterList();
@@ -623,37 +690,35 @@
 
     function renderCharacterList() {
       characterList.innerHTML = "";
-      characters.forEach((char) => {
+      characters.forEach((char, index) => {
         const unlocked = char.unlock();
         const div = document.createElement("div");
-        div.className = "ball-option";
+        div.classList.add("ball-option");
         if (!unlocked) div.classList.add("locked");
+        div.innerHTML = `
+          <span>${char.name}</span>
+          <button ${!unlocked ? "disabled" : ""} data-index="${index}">
+            ${selectedBall === char.name ? "Selecionado" : "Selecionar"}
+          </button>
+        `;
+        characterList.appendChild(div);
+      });
 
-        const nameSpan = document.createElement("span");
-        nameSpan.textContent = char.name;
-
-        const btn = document.createElement("button");
-        btn.textContent = selectedBall === char.name ? "Selecionado" : "Selecionar";
-        btn.disabled = !unlocked || selectedBall === char.name;
-
+      characterList.querySelectorAll("button").forEach((btn) => {
         btn.addEventListener("click", () => {
-          if (unlocked) {
-            selectedBall = char.name;
-            renderCharacterList();
+          const idx = parseInt(btn.dataset.index);
+          if (characters[idx].unlock()) {
+            selectedBall = characters[idx].name;
             characterModal.style.display = "none";
           }
         });
-
-        div.appendChild(nameSpan);
-        div.appendChild(btn);
-        characterList.appendChild(div);
       });
     }
 
-    function showMenu() {
-      gameContainer.style.display = "none";
-      menu.style.display = "block";
-    }
+    // Inicializa os bricks e mostra menu
+    createBricks();
+    showMenu();
   </script>
 </body>
 </html>
+
