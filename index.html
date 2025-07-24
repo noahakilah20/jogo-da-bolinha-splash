@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Jogo Splash Crazy</title>
+  <title>Jogo da Bolinha Neon</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -83,7 +83,7 @@
 </head>
 <body>
   <div id="sidebar">
-    <h1>Splash Crazy</h1>
+    <h1>Jogo da Bolinha Neon</h1>
     <p><strong>Jogador:</strong> <span id="playerName">---</span></p>
     <p><strong>Pontuação:</strong> <span id="score">0</span></p>
     <p><strong>Recorde:</strong> <span id="highScore">0</span></p>
@@ -100,7 +100,6 @@
       <label for="message">Comentário / Sugestão:</label>
       <textarea id="message" name="message" placeholder="Escreva aqui..." required rows="4"></textarea>
 
-      <!-- Desabilitar captcha -->
       <input type="hidden" name="_captcha" value="false" />
 
       <button type="submit">Enviar</button>
@@ -156,7 +155,6 @@
     let bricks = [];
     let hitCount = [];
 
-    // Variáveis para o modo mira (aim)
     let isAiming = false;
     let launched = false;
     let aimStart = null;
@@ -216,7 +214,6 @@
         ctx.lineTo(aimEnd.x, aimEnd.y);
         ctx.stroke();
 
-        // Ponta da seta
         const angle = Math.atan2(aimEnd.y - aimStart.y, aimEnd.x - aimStart.x);
         const arrowLength = 15;
         ctx.beginPath();
@@ -250,7 +247,6 @@
         ball.x += ball.dx;
         ball.y += ball.dy;
 
-        // Colisão com paredes
         if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
           ball.dx = -ball.dx;
         }
@@ -258,7 +254,6 @@
           ball.dy = -ball.dy;
         }
 
-        // Colisão com paddle
         if (
           ball.x > paddle.x &&
           ball.x < paddle.x + paddle.width &&
@@ -266,10 +261,9 @@
           ball.y - ball.radius < paddle.y + paddle.height
         ) {
           ball.dy = -ball.dy;
-          ball.y = paddle.y - ball.radius; // evita que fique preso no paddle
+          ball.y = paddle.y - ball.radius;
         }
 
-        // Colisão com tijolos
         for (let c = 0; c < brickColumnCount; c++) {
           for (let r = 0; r < brickRowCount; r++) {
             let b = bricks[c][r];
@@ -295,7 +289,6 @@
                   highScoreEl.textContent = highScore;
                 }
 
-                // Fase concluída
                 let destroyed = 0;
                 for (let i = 0; i < brickColumnCount; i++) {
                   for (let j = 0; j < brickRowCount; j++) {
@@ -317,7 +310,6 @@
           }
         }
 
-        // Perdeu a bolinha
         if (ball.y - ball.radius > canvas.height) {
           lives--;
           livesEl.textContent = lives;
@@ -329,12 +321,10 @@
           }
         }
       } else {
-        // Bola parada no paddle aguardando lançamento
         ball.x = paddle.x + paddle.width / 2;
         ball.y = paddle.y - ball.radius - 1;
       }
 
-      // Limites do paddle
       if (paddle.x < 0) paddle.x = 0;
       if (paddle.x + paddle.width > canvas.width)
         paddle.x = canvas.width - paddle.width;
@@ -345,7 +335,6 @@
       ball.dy = 0;
       launched = false;
       isAiming = false;
-      // posicionar bola no paddle
       ball.x = paddle.x + paddle.width / 2;
       ball.y = paddle.y - ball.radius - 1;
     }
@@ -370,7 +359,6 @@
       isAiming = false;
     }
 
-    // Eventos de mouse
     canvas.addEventListener("mousedown", (e) => {
       if (!launched) {
         isAiming = true;
@@ -383,7 +371,6 @@
       if (isAiming && !launched) {
         aimEnd = { x: e.offsetX, y: e.offsetY };
       } else if (launched) {
-        // mover paddle com mouse quando bola lançada
         let relativeX = e.clientX - canvas.getBoundingClientRect().left;
         if (relativeX > 0 && relativeX < canvas.width) {
           paddle.x = relativeX - paddle.width / 2;
@@ -398,58 +385,44 @@
       }
     });
 
-    // Eventos de toque
-    canvas.addEventListener(
-      "touchstart",
-      (e) => {
-        if (!launched) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const rect = canvas.getBoundingClientRect();
-          aimStart = { x: ball.x, y: ball.y };
-          aimEnd = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
-          isAiming = true;
-        }
-      },
-      { passive: false }
-    );
+    canvas.addEventListener("touchstart", (e) => {
+      if (!launched) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        aimStart = { x: ball.x, y: ball.y };
+        aimEnd = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+        isAiming = true;
+      }
+    }, { passive: false });
 
-    canvas.addEventListener(
-      "touchmove",
-      (e) => {
-        if (isAiming && !launched) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const rect = canvas.getBoundingClientRect();
-          aimEnd = {
-            x: touch.clientX - rect.left,
-            y: touch.clientY - rect.top,
-          };
-        } else if (launched) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const rect = canvas.getBoundingClientRect();
-          let relativeX = touch.clientX - rect.left;
-          if (relativeX > 0 && relativeX < canvas.width) {
-            paddle.x = relativeX - paddle.width / 2;
-          }
+    canvas.addEventListener("touchmove", (e) => {
+      if (isAiming && !launched) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        aimEnd = {
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top,
+        };
+      } else if (launched) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        let relativeX = touch.clientX - rect.left;
+        if (relativeX > 0 && relativeX < canvas.width) {
+          paddle.x = relativeX - paddle.width / 2;
         }
-      },
-      { passive: false }
-    );
+      }
+    }, { passive: false });
 
-    canvas.addEventListener(
-      "touchend",
-      (e) => {
-        if (isAiming && !launched) {
-          e.preventDefault();
-          launchBall();
-        }
-      },
-      { passive: false }
-    );
+    canvas.addEventListener("touchend", (e) => {
+      if (isAiming && !launched) {
+        e.preventDefault();
+        launchBall();
+      }
+    }, { passive: false });
 
-    // Iniciar jogo
     createBricks();
     resetBall();
     draw();
